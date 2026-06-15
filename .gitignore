@@ -1,0 +1,54 @@
+# WordPress core - tracked upstream
+wp-admin/
+wp-includes/
+wp-content/themes/twentytwentyfive/
+wp-content/themes/twentytwentyfour/
+wp-content/themes/twentytwentythree/
+wp-content/plugins/akismet/
+wp-content/plugins/hello.php
+wp-content/index.php
+wp-content/uploads/
+wp-content/upgrade/
+
+# Root WP files (standard WordPress)
+wp-activate.php
+wp-blog-header.php
+wp-comments-post.php
+wp-config-sample.php
+wp-config.php
+wp-cron.php
+wp-links-opml.php
+wp-load.php
+wp-login.php
+wp-mail.php
+wp-settings.php
+wp-signup.php
+wp-trackback.php
+xmlrpc.php
+license.txt
+readme.html
+index.php
+.htaccess
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Editor
+*.sublime-project
+*.sublime-workspace
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+error_log
+
+# Environment
+.env
+.env.local
+
+# Archive (large files - kept locally only)
+_archive/
