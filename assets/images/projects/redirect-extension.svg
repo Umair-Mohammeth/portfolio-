@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250">
+  <rect width="400" height="250" fill="#1a1a2e"/>
+  <rect x="60" y="40" width="280" height="170" rx="8" fill="#16213e" stroke="#d4af37" stroke-width="1.5"/>
+  <rect x="120" y="55" width="160" height="30" rx="4" fill="#0f0f23" stroke="#d4af37" stroke-width="0.8"/>
+  <rect x="130" y="62" width="30" height="16" rx="3" fill="#d4af37" opacity="0.3"/>
+  <text x="145" y="74" text-anchor="middle" fill="#d4af37" font-family="monospace" font-size="8">HTTP</text>
+  <text x="210" y="74" text-anchor="middle" fill="#888" font-family="monospace" font-size="10">Redirect Extension</text>
+  <path d="M 160 120 L 240 120" stroke="#d4af37" stroke-width="2" stroke-dasharray="4,4"/>
+  <polygon points="240,115 250,120 240,125" fill="#d4af37"/>
+  <rect x="80" y="105" width="70" height="30" rx="4" fill="#0f0f23" stroke="#555" stroke-width="1"/>
+  <text x="115" y="124" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="9">Source URL</text>
+  <rect x="250" y="105" width="70" height="30" rx="4" fill="#0f0f23" stroke="#555" stroke-width="1"/>
+  <text x="285" y="124" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="9">Target URL</text>
+  <rect x="150" y="155" width="100" height="25" rx="4" fill="#d4af37" opacity="0.12"/>
+  <text x="200" y="172" text-anchor="middle" fill="#d4af37" font-family="monospace" font-size="10">Chrome Extension</text>
+  <text x="200" y="225" text-anchor="middle" fill="#d4af37" font-family="monospace" font-size="13" font-weight="bold">Redirect Extension</text>
+</svg>

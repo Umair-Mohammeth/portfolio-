@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250">
+  <rect width="400" height="250" fill="#1a1a2e"/>
+  <rect x="60" y="40" width="280" height="170" rx="8" fill="#16213e" stroke="#d4af37" stroke-width="1.5"/>
+  <rect x="100" y="70" width="120" height="140" rx="4" fill="#0f0f23" stroke="#d4af37" stroke-width="1"/>
+  <rect x="100" y="70" width="120" height="140" rx="4" fill="none" stroke="#d4af37" stroke-width="1" opacity="0.3"/>
+  <circle cx="140" cy="160" r="8" fill="none" stroke="#d4af37" stroke-width="1.5"/>
+  <rect x="200" y="80" width="10" height="20" rx="2" fill="#d4af37"/>
+  <circle cx="205" cy="90" r="3" fill="#d4af37"/>
+  <rect x="230" y="70" width="70" height="30" rx="4" fill="#0f0f23" stroke="#d4af37" stroke-width="1"/>
+  <rect x="240" y="78" width="15" height="8" rx="2" fill="#d4af37" opacity="0.8"/>
+  <rect x="260" y="78" width="15" height="8" rx="2" fill="#d4af37" opacity="0.4"/>
+  <rect x="240" y="90" width="30" height="4" rx="1" fill="#555"/>
+  <text x="200" y="225" text-anchor="middle" fill="#d4af37" font-family="monospace" font-size="13" font-weight="bold">Smart Door Auth</text>
+  <text x="200" y="240" text-anchor="middle" fill="#666" font-family="monospace" font-size="10">IoT Delivery Security</text>
+</svg>

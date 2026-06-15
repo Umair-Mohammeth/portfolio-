@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250">
+  <rect width="400" height="250" fill="#1a1a2e"/>
+  <rect x="60" y="40" width="280" height="170" rx="8" fill="#16213e" stroke="#d4af37" stroke-width="1.5"/>
+  <path d="M200 65 L200 95 M185 80 L215 80" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/>
+  <rect x="110" y="105" width="180" height="8" rx="4" fill="#d4af37" opacity="0.08"/>
+  <rect x="110" y="105" width="160" height="8" rx="4" fill="#d4af37" opacity="0.2"/>
+  <rect x="110" y="120" width="180" height="8" rx="4" fill="#333"/>
+  <rect x="110" y="120" width="140" height="8" rx="4" fill="#d4af37" opacity="0.12"/>
+  <rect x="110" y="135" width="180" height="8" rx="4" fill="#333"/>
+  <rect x="110" y="135" width="100" height="8" rx="4" fill="#d4af37" opacity="0.08"/>
+  <rect x="110" y="150" width="180" height="8" rx="4" fill="#333"/>
+  <rect x="110" y="150" width="170" height="8" rx="4" fill="#d4af37" opacity="0.1"/>
+  <rect x="130" y="175" width="140" height="20" rx="4" fill="#d4af37" opacity="0.12"/>
+  <text x="200" y="189" text-anchor="middle" fill="#d4af37" font-family="monospace" font-size="10">Health Management Dashboard</text>
+  <text x="200" y="225" text-anchor="middle" fill="#d4af37" font-family="monospace" font-size="13" font-weight="bold">HealthEase Manage</text>
+</svg>
