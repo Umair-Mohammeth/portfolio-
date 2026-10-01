@@ -30,24 +30,83 @@ function tech_portfolio_setup() {
         'script',
     ) );
 
+    // Block editor support.
+    add_theme_support( 'wp-block-styles' );
+    add_theme_support( 'align-wide' );
+    add_theme_support( 'responsive-embeds' );
+
+    // Editor styles for consistent block editing experience.
+    add_editor_style();
+
     // Register primary navigation menu.
     register_nav_menus( array(
         'primary' => esc_html__( 'Primary Menu', 'tech-portfolio' ),
     ) );
+
+    // Add content width for responsive embeds.
+    global $content_width;
+    if ( ! isset( $content_width ) ) {
+        $content_width = 1200;
+    }
+
+    // Register custom image sizes.
+    add_image_size( 'project-card', 700, 440, true );
+    add_image_size( 'project-hero', 1200, 600, true );
 }
 add_action( 'after_setup_theme', 'tech_portfolio_setup' );
 
 /* ==========================================================================
-   2. Enqueue Styles
+   2. Enqueue Styles & Scripts
    ========================================================================== */
 function tech_portfolio_scripts() {
+    $theme_version = wp_get_theme()->get( 'Version' );
+    $css_version   = file_exists( get_template_directory() . '/style.css' ) ? filemtime( get_template_directory() . '/style.css' ) : $theme_version;
+    $js_path       = '/assets/js/main.js';
+    $js_version    = file_exists( get_template_directory() . $js_path ) ? filemtime( get_template_directory() . $js_path ) : $theme_version;
+
     // Enqueue main stylesheet.
-    wp_enqueue_style( 'tech-portfolio-style', get_stylesheet_uri(), array(), '1.0.0' );
+    wp_enqueue_style( 'tech-portfolio-style', get_stylesheet_uri(), array(), (string) $css_version );
+
+    // Enqueue Google Fonts (Outfit + JetBrains Mono, non-blocking).
+    wp_enqueue_style(
+        'tech-portfolio-google-fonts',
+        'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap',
+        array(),
+        null
+    );
+
+    // Enqueue main script (handles nav, scroll-reveal, counters, filter).
+    wp_enqueue_script(
+        'tech-portfolio-main',
+        get_template_directory_uri() . $js_path,
+        array(),
+        (string) $js_version,
+        true
+    );
+    wp_script_add_data( 'tech-portfolio-main', 'defer', true );
 }
 add_action( 'wp_enqueue_scripts', 'tech_portfolio_scripts' );
 
 /* ==========================================================================
-   3. Register Custom Post Type (Projects)
+   3. Default Fallback Menu
+   ========================================================================== */
+function tech_portfolio_default_menu() {
+    ?>
+    <ul class="nav-menu" id="primary-nav">
+        <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'tech-portfolio' ); ?></a></li>
+        <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'About', 'tech-portfolio' ); ?></a></li>
+        <li><a href="<?php echo esc_url( home_url( '/experience/' ) ); ?>"><?php esc_html_e( 'Experience', 'tech-portfolio' ); ?></a></li>
+        <li><a href="<?php echo esc_url( get_post_type_archive_link( 'projects' ) ); ?>"><?php esc_html_e( 'Projects', 'tech-portfolio' ); ?></a></li>
+    </ul>
+    <?php
+}
+
+/* ==========================================================================
+   4. (Removed) Separate filter script – functionality merged into main.js
+   ========================================================================== */
+
+/* ==========================================================================
+   5. Register Custom Post Type (Projects)
    ========================================================================== */
 function tech_portfolio_register_cpt_projects() {
     $labels = array(
@@ -88,7 +147,7 @@ function tech_portfolio_register_cpt_projects() {
 add_action( 'init', 'tech_portfolio_register_cpt_projects' );
 
 /* ==========================================================================
-   4. Register Custom Taxonomy (Project Categories)
+   6. Register Custom Taxonomy (Project Categories)
    ========================================================================== */
 function tech_portfolio_register_taxonomy_projects() {
     $labels = array(
@@ -120,7 +179,7 @@ function tech_portfolio_register_taxonomy_projects() {
 add_action( 'init', 'tech_portfolio_register_taxonomy_projects' );
 
 /* ==========================================================================
-   5. Secure Meta Boxes for CPT Metadata
+   7. Secure Meta Boxes for CPT Metadata
    ========================================================================== */
 function tech_portfolio_add_project_meta_boxes() {
     add_meta_box(
@@ -166,148 +225,297 @@ function tech_portfolio_render_project_meta_box( $post ) {
 }
 
 function tech_portfolio_save_project_meta_data( $post_id ) {
-    // Check if nonce is set.
-    if ( ! isset( $_POST['tech_portfolio_project_meta_nonce'] ) ) {
+    // Check permissions first (cheapest check).
+    if ( ! current_user_can( 'edit_post', $post_id ) ) {
         return;
     }
 
-    // Verify nonce.
-    if ( ! wp_verify_nonce( $_POST['tech_portfolio_project_meta_nonce'], 'tech_portfolio_save_project_meta' ) ) {
-        return;
-    }
-
-    // Check permissions.
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
         return;
     }
 
-    if ( isset( $_POST['post_type'] ) && 'projects' === $_POST['post_type'] ) {
-        if ( ! current_user_can( 'edit_post', $post_id ) ) {
-            return;
-        }
-    } else {
+    // Check post type.
+    if ( ! isset( $_POST['post_type'] ) || 'projects' !== $_POST['post_type'] ) {
         return;
     }
 
-    // Sanitize and save data.
+    // Verify nonce (VibeSec: always require nonce, reject if missing).
+    if ( ! isset( $_POST['tech_portfolio_project_meta_nonce'] ) ||
+         ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['tech_portfolio_project_meta_nonce'] ) ), 'tech_portfolio_save_project_meta' ) ) {
+        return;
+    }
+
+    // Sanitize and save data (use wp_unslash before sanitizing).
     if ( isset( $_POST['project_role'] ) ) {
-        update_post_meta( $post_id, '_project_role', sanitize_text_field( $_POST['project_role'] ) );
+        update_post_meta( $post_id, '_project_role', sanitize_text_field( wp_unslash( $_POST['project_role'] ) ) );
     }
 
     if ( isset( $_POST['project_tech_stack'] ) ) {
-        update_post_meta( $post_id, '_project_tech_stack', sanitize_text_field( $_POST['project_tech_stack'] ) );
+        // VibeSec: sanitize comma-separated tech stack, strip tags
+        $tech_stack = sanitize_text_field( wp_unslash( $_POST['project_tech_stack'] ) );
+        $tech_stack = wp_strip_all_tags( $tech_stack );
+        update_post_meta( $post_id, '_project_tech_stack', $tech_stack );
     }
 
     if ( isset( $_POST['project_github_url'] ) ) {
-        update_post_meta( $post_id, '_project_github_url', esc_url_raw( $_POST['project_github_url'] ) );
+        // VibeSec: validate URL scheme is http/https only
+        $github_url = esc_url_raw( wp_unslash( $_POST['project_github_url'] ), array( 'http', 'https' ) );
+        if ( $github_url ) {
+            update_post_meta( $post_id, '_project_github_url', $github_url );
+        }
     }
 
     if ( isset( $_POST['project_live_url'] ) ) {
-        update_post_meta( $post_id, '_project_live_url', esc_url_raw( $_POST['project_live_url'] ) );
+        // VibeSec: validate URL scheme is http/https only
+        $live_url = esc_url_raw( wp_unslash( $_POST['project_live_url'] ), array( 'http', 'https' ) );
+        if ( $live_url ) {
+            update_post_meta( $post_id, '_project_live_url', $live_url );
+        }
     }
 }
 add_action( 'save_post', 'tech_portfolio_save_project_meta_data' );
 
 /* ==========================================================================
-   6. GitHub API Helper & Shortcode
+   8. Security Headers (VibeSec Hardening)
    ========================================================================== */
-function tech_portfolio_fetch_github_repos( $username = 'Umair-Mohammeth' ) {
-    $cache_key = 'tech_portfolio_github_repos_' . $username;
-    $repos     = get_transient( $cache_key );
+function tech_portfolio_security_headers() {
+    if ( ! is_admin() && ! headers_sent() ) {
+        header( 'X-Content-Type-Options: nosniff' );
+        header( 'X-Frame-Options: DENY' );
+        header( 'Referrer-Policy: strict-origin-when-cross-origin' );
+        header( 'Permissions-Policy: camera=(), microphone=(), geolocation=()' );
 
-    if ( false === $repos ) {
-        $response = wp_remote_get( "https://api.github.com/users/{$username}/repos?sort=updated&per_page=20" );
-
-        if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-            return array();
+        // Only send HSTS on HTTPS to avoid breaking local XAMPP http.
+        if ( is_ssl() ) {
+            header( 'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload' );
         }
 
-        $body  = wp_remote_retrieve_body( $response );
-        $repos = json_decode( $body, true );
-
-        if ( ! is_array( $repos ) ) {
-            return array();
-        }
-
-        // Filter out forks and archived repos
-        $repos = array_filter( $repos, function( $repo ) {
-            return ! $repo['fork'] && ! $repo['archived'];
-        });
-
-        set_transient( $cache_key, $repos, HOUR_IN_SECONDS );
+        // Content Security Policy — allow self + Google Fonts. No inline scripts blocked
+        // that would break wp_head JSON-LD; tighten only if all inline moved to files.
+        $csp = implode( '; ', array(
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline'",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+            "img-src 'self' data: https:",
+            "font-src 'self' https://fonts.gstatic.com",
+            "connect-src 'self'",
+            "frame-ancestors 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+        ) );
+        header( "Content-Security-Policy: {$csp}" );
     }
-
-    return $repos;
 }
+add_action( 'send_headers', 'tech_portfolio_security_headers' );
 
-function tech_portfolio_render_github_projects( $atts = array() ) {
-    $atts = shortcode_atts( array(
-        'username' => 'Umair-Mohammeth',
-        'count'    => 0,
-    ), $atts );
+/* ==========================================================================
+   8b. Disable XML-RPC (attack surface reduction)
+   ========================================================================== */
+function tech_portfolio_disable_xmlrpc() {
+    return false;
+}
+add_filter( 'xmlrpc_enabled', 'tech_portfolio_disable_xmlrpc' );
 
-    $repos = tech_portfolio_fetch_github_repos( $atts['username'] );
+/* ==========================================================================
+   8c. Disable file editing in admin
+   ========================================================================== */
+function tech_portfolio_disable_file_edit() {
+    if ( defined( 'DISALLOW_FILE_EDIT' ) && DISALLOW_FILE_EDIT ) {
+        return;
+    }
+    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+    if ( ! defined( 'ABSPATH' ) ) {
+        return;
+    }
+}
+add_action( 'admin_init', 'tech_portfolio_disable_file_edit' );
 
-    if ( empty( $repos ) ) {
-        return '<p style="color: var(--text-gray); font-style: italic;">Unable to fetch GitHub repositories at this time.</p>';
+/* ==========================================================================
+   8d. Remove WordPress version from head and feeds
+   ========================================================================== */
+function tech_portfolio_remove_version() {
+    remove_action( 'wp_head', 'wp_generator' );
+    add_filter( 'the_generator', '__return_empty_string' );
+}
+add_action( 'after_setup_theme', 'tech_portfolio_remove_version' );
+
+/* ==========================================================================
+   8e. Disable REST API user enumeration
+   ========================================================================== */
+function tech_portfolio_restrict_user_rest( $response, $handler, $request ) {
+    $route = $request->get_route();
+    if ( preg_match( '/\/wp\/v2\/users/', $route ) && ! current_user_can( 'list_users' ) ) {
+        return new WP_Error(
+            'rest_forbidden',
+            __( 'You do not have permission to access this endpoint.', 'tech-portfolio' ),
+            array( 'status' => 403 )
+        );
+    }
+    return $response;
+}
+add_filter( 'rest_request_before_callbacks', 'tech_portfolio_restrict_user_rest', 10, 3 );
+
+/* ==========================================================================
+   9. Register Widget Areas
+   ========================================================================== */
+function tech_portfolio_widgets_init() {
+    register_sidebar( array(
+        'name'          => esc_html__( 'Footer Widget Area', 'tech-portfolio' ),
+        'id'            => 'footer-widgets',
+        'description'   => esc_html__( 'Widgets in this area appear in the footer.', 'tech-portfolio' ),
+        'before_widget' => '<div class="footer-widget %2$s">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h3>',
+        'after_title'   => '</h3>',
+    ) );
+}
+add_action( 'widgets_init', 'tech_portfolio_widgets_init' );
+
+/* ==========================================================================
+   10. Performance: Defer Non-Critical Scripts & Preload Fonts
+   ========================================================================== */
+function tech_portfolio_script_loader( $tag, $handle, $src ) {
+    // Modern WP already defers via wp_script_add_data; keep as fallback.
+    $defer_scripts = array( 'tech-portfolio-main' );
+
+    if ( in_array( $handle, $defer_scripts, true ) && false === strpos( $tag, ' defer' ) ) {
+        $tag = str_replace( ' src', ' defer src', $tag );
     }
 
-    if ( $atts['count'] > 0 ) {
-        $repos = array_slice( $repos, 0, $atts['count'] );
-    }
+    return $tag;
+}
+add_filter( 'script_loader_tag', 'tech_portfolio_script_loader', 10, 3 );
 
-    $repo_image_map = array(
-        'ESC-POS'                     => 'esc-pos.svg',
-        'ESC-POS---windows-base'      => 'esc-pos-windows.svg',
-        'Smart-Door-Delivery-Authentication-System' => 'smart-door.svg',
-        'School-Scheme-of-Work-Generator-' => 'school-scheme.svg',
-        'Redirect-extension-'         => 'redirect-extension.svg',
-        'health-ease-manage'          => 'health-ease.svg',
-        'Word-Checker'                => 'word-checker.svg',
-    );
-    $assets_url = get_template_directory_uri() . '/../assets/images/projects';
-
-    ob_start();
+function tech_portfolio_preload_assets() {
     ?>
-    <div class="projects-grid" id="github-projects-grid">
-        <?php foreach ( $repos as $repo ) :
-            $name        = $repo['name'] ?? '';
-            $description = $repo['description'] ?? '';
-            $language    = $repo['language'] ?? '';
-            $stars       = $repo['stargazers_count'] ?? 0;
-            $updated     = isset( $repo['pushed_at'] ) ? human_time_diff( strtotime( $repo['pushed_at'] ), current_time( 'timestamp' ) ) . ' ago' : '';
-            $github_url  = $repo['html_url'] ?? '#';
-            $homepage    = $repo['homepage'] ?? '';
-            $repo_image  = isset( $repo_image_map[ $name ] ) ? $assets_url . '/' . $repo_image_map[ $name ] : '';
-        ?>
-        <article class="project-card">
-            <div class="project-card-image" style="display:flex; align-items:center; justify-content:center; background: #151515; color:#333; overflow:hidden;">
-                <?php if ( $repo_image ) : ?>
-                    <img src="<?php echo esc_url( $repo_image ); ?>" alt="<?php echo esc_attr( $name ); ?>" style="width:100%; height:100%; object-fit:cover;">
-                <?php else : ?>
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                        <path d="M16.5 9.4 7.55 4.24a1.79 1.79 0 0 0-1.8 0L3 5.82a1.79 1.79 0 0 0-.9 1.56v6.84a1.8 1.8 0 0 0 .9 1.56l8.05 4.64a1.8 1.8 0 0 0 1.8 0l8.05-4.64a1.8 1.8 0 0 0 .9-1.56v-6.84a1.8 1.8 0 0 0-.9-1.56z"/>
-                    </svg>
-                <?php endif; ?>
-            </div>
-            <div class="project-card-content">
-                <span class="project-card-meta"><?php echo esc_html( $language ? $language : 'Various' ); ?></span>
-                <h3 class="project-card-title">
-                    <a href="<?php echo esc_url( $github_url ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $name ); ?></a>
-                </h3>
-                <div class="project-card-excerpt">
-                    <?php echo esc_html( $description ? wp_trim_words( $description, 18 ) : 'No description provided.' ); ?>
-                </div>
-                <div style="display:flex; gap:12px; align-items:center; margin-bottom:16px; font-size:0.85rem; color:var(--text-gray); font-family:var(--font-mono);">
-                    <span>&#9733; <?php echo intval( $stars ); ?></span>
-                    <span>&#9679; Updated <?php echo esc_html( $updated ); ?></span>
-                </div>
-                <a href="<?php echo esc_url( $github_url ); ?>" target="_blank" rel="noopener noreferrer" class="project-card-link"><?php esc_html_e( 'View Repository', 'tech-portfolio' ); ?></a>
-            </div>
-        </article>
-        <?php endforeach; ?>
-    </div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <?php
-    return ob_get_clean();
 }
-add_shortcode( 'github_projects', 'tech_portfolio_render_github_projects' );
+add_action( 'wp_head', 'tech_portfolio_preload_assets', 1 );
+
+/* ==========================================================================
+   10b. Performance: Browser Caching via .htaccess (PHP cannot cache statics)
+   NOTE: send_headers only fires for WP PHP requests, never for .css/.js/.png
+   served directly by Apache. Use .htaccess Expires/Cache-Control instead.
+   ========================================================================== */
+function tech_portfolio_cache_headers() {
+    return;
+}
+add_action( 'send_headers', 'tech_portfolio_cache_headers', 99 );
+
+/* ==========================================================================
+   10c. Performance: Add Lazy Loading to Iframes
+   ========================================================================== */
+function tech_portfolio_lazy_iframes( $content ) {
+    if ( is_admin() ) {
+        return $content;
+    }
+    return str_replace( '<iframe ', '<iframe loading="lazy" ', $content );
+}
+add_filter( 'the_content', 'tech_portfolio_lazy_iframes' );
+
+/* ==========================================================================
+   10d. Project Placeholder Images (SVG)
+   ========================================================================== */
+function tech_portfolio_get_project_placeholder( $post_id = 0 ) {
+    $map = array(
+        'iot-rfid-access'        => 'iot-rfid-access.svg',
+        'network-automation'     => 'network-automation.svg',
+        'cybersecurity-monitor'  => 'cybersecurity-monitor.svg',
+        'cloud-infrastructure'   => 'cloud-infrastructure.svg',
+        'python-automation'      => 'python-automation.svg',
+        'cisco-packet-tracer'    => 'cisco-packet-tracer.svg',
+    );
+
+    $default = 'network-automation.svg';
+    $file    = $default;
+
+    if ( $post_id ) {
+        $terms = get_the_terms( $post_id, 'project_category' );
+        if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+            foreach ( $terms as $term ) {
+                if ( isset( $map[ $term->slug ] ) ) {
+                    $file = $map[ $term->slug ];
+                    break;
+                }
+            }
+        }
+
+        if ( $file === $default ) {
+            $title = strtolower( get_the_title( $post_id ) );
+            foreach ( array_keys( $map ) as $key ) {
+                if ( strpos( $title, $key ) !== false ) {
+                    $file = $map[ $key ];
+                    break;
+                }
+            }
+        }
+    }
+
+    return get_template_directory_uri() . '/assets/images/' . $file;
+}
+
+/* ==========================================================================
+   11. SEO: Open Graph Meta Tags
+   ========================================================================== */
+function tech_portfolio_opengraph_meta() {
+    if ( is_singular() && ! is_post_type_archive() ) {
+        global $post;
+        ?>
+        <meta property="og:title" content="<?php echo esc_attr( get_the_title() ); ?>">
+        <meta property="og:description" content="<?php echo esc_attr( wp_trim_words( get_the_excerpt(), 30, '...' ) ); ?>">
+        <meta property="og:type" content="article">
+        <meta property="og:url" content="<?php echo esc_url( get_permalink() ); ?>">
+        <?php
+        if ( has_post_thumbnail() ) {
+            $thumb = wp_get_attachment_image_src( get_post_thumbnail_id(), 'large' );
+            if ( $thumb ) {
+                ?>
+                <meta property="og:image" content="<?php echo esc_url( $thumb[0] ); ?>">
+                <?php
+            }
+        }
+    } elseif ( is_front_page() ) {
+        ?>
+        <meta property="og:title" content="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+        <meta property="og:description" content="<?php echo esc_attr( get_bloginfo( 'description' ) ); ?>">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="<?php echo esc_url( home_url( '/' ) ); ?>">
+        <?php
+    }
+}
+add_action( 'wp_head', 'tech_portfolio_opengraph_meta', 2 );
+
+/* ==========================================================================
+   12. SEO: JSON-LD Structured Data (Person Schema)
+   ========================================================================== */
+function tech_portfolio_structured_data() {
+    if ( is_front_page() ) {
+        $schema = array(
+            '@context'    => 'https://schema.org',
+            '@type'       => 'Person',
+            'name'        => 'Mohammed Nazar Umair Mohammeth',
+            'jobTitle'    => 'Network Administrator',
+            'description' => 'Cisco CCNA Certified Network Administrator, Cybersecurity Enthusiast, and Python Automation Developer based in Kandy, Sri Lanka.',
+            'url'         => home_url( '/' ),
+            'email'       => 'mohammednazarumairmohammeth@gmail.com',
+            'telephone'   => '+94721658204',
+            'sameAs'      => array(),
+            'address'     => array(
+                '@type'           => 'PostalAddress',
+                'addressLocality' => 'Kandy',
+                'addressRegion'   => 'Central Province',
+                'addressCountry'  => 'LK',
+            ),
+            'knowsAbout' => array(
+                'Network Administration', 'Cisco CCNA', 'Cybersecurity',
+                'Python Scripting', 'Cloud Security', 'IoT Systems',
+            ),
+        );
+
+        echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . '</script>' . "\n";
+    }
+}
+add_action( 'wp_head', 'tech_portfolio_structured_data', 3 );

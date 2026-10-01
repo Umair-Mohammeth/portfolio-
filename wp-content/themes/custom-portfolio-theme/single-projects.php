@@ -5,60 +5,63 @@
  * @package TechPortfolio
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 get_header(); ?>
 
 <?php
 while ( have_posts() ) :
     the_post();
 
-    // Query hidden post-meta keys securely.
     $project_role       = get_post_meta( get_the_ID(), '_project_role', true );
     $project_tech_stack = get_post_meta( get_the_ID(), '_project_tech_stack', true );
     $project_github     = get_post_meta( get_the_ID(), '_project_github_url', true );
     $project_live       = get_post_meta( get_the_ID(), '_project_live_url', true );
     ?>
 
-    <!-- Project Hero Header -->
-    <section class="section page-hero" style="background: linear-gradient(180deg, rgba(212, 175, 55, 0.03) 0%, transparent 100%); padding: 100px 0 40px;">
-        <div class="container">
-            <h1 class="hero-title" style="margin-bottom: 16px;"><?php the_title(); ?></h1>
+    <section class="project-single-hero">
+        <div class="container" style="position:relative;z-index:1;">
+            <div class="page-hero-tag"><?php esc_html_e( 'Case Study', 'tech-portfolio' ); ?></div>
+            <h1 class="page-hero-title"><?php echo esc_html( get_the_title() ); ?></h1>
             <?php if ( ! empty( $project_role ) ) : ?>
-                <p class="hero-subtitle" style="font-size: 1.1rem; margin-bottom: 0;">
-                    <strong><?php esc_html_e( 'Role / Scope:', 'tech-portfolio' ); ?></strong> 
+                <p class="page-hero-desc">
+                    <strong><?php esc_html_e( 'Role / Scope:', 'tech-portfolio' ); ?></strong>
                     <?php echo esc_html( $project_role ); ?>
                 </p>
             <?php endif; ?>
         </div>
     </section>
 
-    <!-- Main Container -->
-    <section class="section project-detail-section" style="border-top: 1px solid var(--border-gray); padding-top: 40px;">
+    <section class="section project-detail-section" style="padding-top: 40px;">
         <div class="container">
             <div class="project-single-container">
                 
-                <!-- Project Main Body Content -->
                 <main class="project-main-content">
                     <?php if ( has_post_thumbnail() ) : ?>
-                        <div class="project-featured-image" style="margin-bottom: 40px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-gray);">
-                            <?php the_post_thumbnail( 'large', array( 'style' => 'width:100%; height:auto; display:block;' ) ); ?>
+                        <div class="project-featured-image">
+                            <?php the_post_thumbnail( 'project-hero', array( 'loading' => 'lazy', 'alt' => esc_attr( get_the_title() ) ) ); ?>
                         </div>
                     <?php endif; ?>
                     
                     <div class="project-content-body">
                         <?php the_content(); ?>
                     </div>
+
+                    <nav class="project-nav" aria-label="<?php esc_attr_e( 'Project navigation', 'tech-portfolio' ); ?>">
+                        <div><?php previous_post_link( '%link', '<span>&larr; ' . esc_html__( 'Previous', 'tech-portfolio' ) . '</span>%title' ); ?></div>
+                        <div style="text-align:right;"><?php next_post_link( '%link', '<span>' . esc_html__( 'Next', 'tech-portfolio' ) . ' &rarr;</span>%title' ); ?></div>
+                    </nav>
                 </main>
 
-                <!-- Project Sidebar Specs -->
-                <aside class="project-sidebar">
+                <aside class="project-sidebar" aria-label="<?php esc_attr_e( 'Project Details Sidebar', 'tech-portfolio' ); ?>">
                     
-                    <!-- Tech Stack Widget -->
                     <?php if ( ! empty( $project_tech_stack ) ) : ?>
                         <div class="project-sidebar-widget">
                             <h3 class="widget-title"><?php esc_html_e( 'Technologies Used', 'tech-portfolio' ); ?></h3>
                             <div class="badge-grid">
                                 <?php
-                                // Convert comma-separated string to clean individual grid tags.
                                 $badges = explode( ',', $project_tech_stack );
                                 foreach ( $badges as $badge ) {
                                     $trimmed_badge = trim( $badge );
@@ -71,13 +74,12 @@ while ( have_posts() ) :
                         </div>
                     <?php endif; ?>
 
-                    <!-- Metadata details widget -->
                     <div class="project-sidebar-widget">
                         <h3 class="widget-title"><?php esc_html_e( 'Project Metadata', 'tech-portfolio' ); ?></h3>
                         <div class="widget-value" style="display:flex; flex-direction:column; gap:16px;">
                             <div>
                                 <strong style="color: var(--text-white); display:block; margin-bottom:4px; font-size:0.9rem; text-transform:uppercase; font-family:var(--font-mono);"><?php esc_html_e( 'Project ID', 'tech-portfolio' ); ?></strong>
-                                <span style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--accent-gold);"><?php echo esc_html( sprintf( '#PRJ-%04d', get_the_ID() ) ); ?></span>
+                                <span style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--gold);"><?php echo esc_html( sprintf( '#PRJ-%04d', get_the_ID() ) ); ?></span>
                             </div>
                             <div>
                                 <strong style="color: var(--text-white); display:block; margin-bottom:4px; font-size:0.9rem; text-transform:uppercase; font-family:var(--font-mono);"><?php esc_html_e( 'Classification', 'tech-portfolio' ); ?></strong>
@@ -96,7 +98,6 @@ while ( have_posts() ) :
                         </div>
                     </div>
 
-                    <!-- Call-to-Action Interactive Buttons -->
                     <?php if ( ! empty( $project_github ) || ! empty( $project_live ) ) : ?>
                         <div class="project-sidebar-widget">
                             <h3 class="widget-title"><?php esc_html_e( 'Access & Deployments', 'tech-portfolio' ); ?></h3>
@@ -123,6 +124,6 @@ while ( have_posts() ) :
     </section>
 
 <?php
-endwhile; // End of the loop.
+endwhile;
 get_footer();
 ?>
