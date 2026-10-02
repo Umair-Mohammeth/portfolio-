@@ -1,61 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 440" fill="none">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0A0C16"/>
-      <stop offset="100%" stop-color="#0D1020"/>
-    </linearGradient>
-    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#F5D76E"/>
-      <stop offset="100%" stop-color="#A8881A"/>
-    </linearGradient>
-    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#FF8C42"/>
-      <stop offset="100%" stop-color="#CC6600"/>
-    </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="8" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="glow-sm">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
-  <rect width="700" height="440" fill="url(#bg)"/>
-  <g opacity="0.06" stroke="#D4AF37" stroke-width="0.5">
-    <path d="M0 100h700M0 200h700M0 300h700M0 400h700"/>
-    <path d="M100 0v440M200 0v440M300 0v440M400 0v440M500 0v440M600 0v440"/>
-  </g>
-  <circle cx="350" cy="220" r="160" fill="url(#orange)" opacity="0.06"/>
-  <g filter="url(#glow)">
-    <rect x="200" y="100" width="300" height="240" rx="20" fill="rgba(255,255,255,0.04)" stroke="url(#gold)" stroke-width="1.5"/>
-  </g>
-  <g filter="url(#glow-sm)">
-    <rect x="220" y="120" width="260" height="200" rx="12" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-    <rect x="240" y="140" width="100" height="10" rx="5" fill="url(#gold)" opacity="0.7"/>
-    <rect x="240" y="160" width="220" height="6" rx="3" fill="rgba(255,255,255,0.12)"/>
-    <rect x="240" y="176" width="180" height="6" rx="3" fill="rgba(255,255,255,0.08)"/>
-  </g>
-  <g filter="url(#glow-sm)">
-    <rect x="240" y="200" width="80" height="50" rx="8" fill="rgba(255,140,66,0.1)" stroke="rgba(255,140,66,0.3)" stroke-width="1"/>
-    <rect x="340" y="200" width="80" height="50" rx="8" fill="rgba(212,175,55,0.1)" stroke="rgba(212,175,55,0.3)" stroke-width="1"/>
-    <rect x="440" y="200" width="20" height="50" rx="4" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-  </g>
-  <g font-family="monospace" font-size="9" fill="rgba(255,255,255,0.25)">
-    <text x="255" y="230">VLAN</text>
-    <text x="355" y="230">ACL</text>
-    <text x="445" y="230">+</text>
-  </g>
-  <g filter="url(#glow-sm)">
-    <circle cx="350" cy="380" r="16" fill="none" stroke="url(#orange)" stroke-width="1.5"/>
-    <path d="M350 372v8l5 4" stroke="url(#orange)" stroke-width="1.5" stroke-linecap="round"/>
-  </g>
-  <g stroke="rgba(255,140,66,0.15)" stroke-width="1" stroke-dasharray="4 4">
-    <path d="M100 220L200 220"/>
-    <path d="M500 220L600 220"/>
-  </g>
-  <g fill="rgba(255,140,66,0.3)">
-    <circle cx="100" cy="220" r="4"/>
-    <circle cx="600" cy="220" r="4"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 440" role="img" aria-label="Cisco Packet Tracer Lab">
+<defs>
+<linearGradient id="bg6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#06070D"/><stop offset="1" stop-color="#1A1206"/></linearGradient>
+<linearGradient id="gold6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F5D76E"/><stop offset="1" stop-color="#A8881A"/></linearGradient>
+<linearGradient id="glass6" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".13"/><stop offset="1" stop-color="#fff" stop-opacity=".03"/></linearGradient>
+<radialGradient id="orb6" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FF8C42" stop-opacity=".3"/><stop offset="1" stop-color="#FF8C42" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="700" height="440" fill="url(#bg6)"/>
+<circle cx="150" cy="100" r="140" fill="url(#orb6)"/>
+<g opacity=".07" stroke="#D4AF37"><path d="M0 110h700M0 330h700M140 0v440M560 0v440"/></g>
+<rect x="150" y="70" width="400" height="300" rx="24" fill="url(#glass6)" stroke="#fff" stroke-opacity=".16"/>
+<g fill="#0B0E1A" stroke="url(#gold6)" stroke-width="2"><rect x="310" y="130" width="80" height="56" rx="10"/><rect x="215" y="240" width="80" height="56" rx="10"/><rect x="405" y="240" width="80" height="56" rx="10"/></g>
+<g stroke="#00D4FF" stroke-width="1.8"><path d="M350 186v30M350 216 255 240M350 216l135 24"/></g>
+<g fill="#00D4FF"><circle cx="350" cy="216" r="5"/><circle cx="255" cy="240" r="4"/><circle cx="485" cy="240" r="4"/></g>
+<g font-family="monospace" font-size="11" text-anchor="middle" fill="#fff"><text x="350" y="160">ROUTER</text><text x="255" y="272">SW-1</text><text x="445" y="272">SW-2</text></g>
+<g font-family="monospace" font-size="11"><text x="185" y="325" fill="#22C55E">● VLAN 10 UP</text><text x="310" y="325" fill="#22C55E">● OSPF OK</text><text x="420" y="325" fill="#F5D76E">● ACL 4 RULES</text></g>
 </svg>

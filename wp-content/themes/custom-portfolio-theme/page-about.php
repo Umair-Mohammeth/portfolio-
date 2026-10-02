@@ -37,47 +37,47 @@ get_header();
 <?php endwhile; endif; ?>
 <?php rewind_posts(); ?>
 
-<!-- Education Timeline -->
+<!-- Education Grid -->
 <section class="section education-section" aria-labelledby="education-title">
     <div class="container">
-        <h2 class="section-title reveal" id="education-title" data-index="01"><?php esc_html_e( 'Education Timeline', 'tech-portfolio' ); ?></h2>
+        <h2 class="section-title reveal" id="education-title" data-index="01"><?php esc_html_e( 'Education', 'tech-portfolio' ); ?></h2>
 
-        <div class="timeline">
+        <div class="skills-grid">
+            <?php
+            $education = array(
+                array(
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+                    'title' => __( 'BEng (Hons) Computer Networking and Cloud Security', 'tech-portfolio' ),
+                    'subtitle' => __( 'ESU Kandy — Affiliated with London Metropolitan University, UK', 'tech-portfolio' ),
+                    'desc'  => __( 'Advanced cloud security frameworks, enterprise routing architectures, virtualization, and vulnerability assessments. Expected 2028.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-1',
+                ),
+                array(
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+                    'title' => __( 'Higher Diploma in Network Technology and Cybersecurity', 'tech-portfolio' ),
+                    'subtitle' => __( 'ICBT Kandy — Affiliated with Cardiff Metropolitan University, UK · Merit Pass', 'tech-portfolio' ),
+                    'desc'  => __( 'Infrastructure switching, defense architectures, system monitoring, and network configuration principles. Completed Dec 2025.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-2',
+                ),
+                array(
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="2" width="20" height="20" rx="2"/><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+                    'title' => __( 'Fullstack Web Development', 'tech-portfolio' ),
+                    'subtitle' => __( 'University of Moratuwa (Online)', 'tech-portfolio' ),
+                    'desc'  => __( 'Frontend: React.js, responsive design. Backend: Node.js/Express, REST APIs, JWT/OAuth. Database: PostgreSQL, MongoDB. DevOps: Docker, CI/CD, Git/GitHub. Completed 2022.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-3',
+                ),
+            );
 
-            <div class="timeline-item">
-                <div class="timeline-card">
-                    <span class="timeline-date"><?php esc_html_e( 'March 2026 – Present', 'tech-portfolio' ); ?></span>
-                    <h3 class="timeline-title"><?php esc_html_e( 'BEng (Hons) Computer Networking and Cloud Security', 'tech-portfolio' ); ?></h3>
-                    <h4 class="timeline-subtitle"><?php esc_html_e( 'ESU Kandy — Affiliated with London Metropolitan University, UK', 'tech-portfolio' ); ?></h4>
-                    <div class="timeline-desc">
-                        <p><?php esc_html_e( 'Focusing on advanced cloud security frameworks, enterprise routing architectures, virtualization, and vulnerability assessments.', 'tech-portfolio' ); ?></p>
-                    </div>
+            foreach ( $education as $edu ) :
+            ?>
+                <div class="skill-card reveal <?php echo esc_attr( $edu['delay'] ); ?>">
+                    <div class="skill-icon" aria-hidden="true"><?php echo $edu['icon']; // Already escaped SVG ?></div>
+                    <h3 class="skill-title"><?php echo esc_html( $edu['title'] ); ?></h3>
+                    <p class="skill-subtitle" style="color: var(--gold); font-size: 0.85rem; font-weight: 500; margin-bottom: 8px;"><?php echo esc_html( $edu['subtitle'] ); ?></p>
+                    <p class="skill-desc"><?php echo esc_html( $edu['desc'] ); ?></p>
                 </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-card">
-                    <span class="timeline-date"><?php esc_html_e( 'November 2024 – December 2025', 'tech-portfolio' ); ?></span>
-                    <h3 class="timeline-title"><?php esc_html_e( 'Higher Diploma in Network Technology and Cybersecurity', 'tech-portfolio' ); ?></h3>
-                    <h4 class="timeline-subtitle"><?php esc_html_e( 'ICBT Kandy — Affiliated with Cardiff Metropolitan University, UK · Merit Pass', 'tech-portfolio' ); ?></h4>
-                    <div class="timeline-desc">
-                        <p><?php esc_html_e( 'Comprehensive study of infrastructure switching, defense architectures, system monitoring, and network configuration principles.', 'tech-portfolio' ); ?></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-card">
-                    <span class="timeline-date"><?php esc_html_e( '2022', 'tech-portfolio' ); ?></span>
-                    <h3 class="timeline-title"><?php esc_html_e( 'Fullstack Web Development', 'tech-portfolio' ); ?></h3>
-                    <h4 class="timeline-subtitle"><?php esc_html_e( 'University of Moratuwa (Online)', 'tech-portfolio' ); ?></h4>
-                    <div class="timeline-desc">
-                        <p><?php esc_html_e( 'Learned foundational front-end and back-end web frameworks, database administration, and application deployment strategies.', 'tech-portfolio' ); ?></p>
-                    </div>
-                </div>
-            </div>
-
-        </div><!-- .timeline -->
+            <?php endforeach; ?>
+        </div>
     </div>
 </section>
 
@@ -86,71 +86,81 @@ get_header();
     <div class="container">
         <h2 class="section-title reveal" id="certs-title" data-index="02"><?php esc_html_e( 'Professional Certifications', 'tech-portfolio' ); ?></h2>
 
-        <div class="certs-grid">
+        <div class="skills-grid">
             <?php
             $certifications = array(
                 array(
-                    'name'   => __( 'Cisco Certified Network Associate (CCNA)', 'tech-portfolio' ),
-                    'issuer' => __( 'Cisco Systems', 'tech-portfolio' ),
-                    'icon'   => '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+                    'title' => __( 'Cisco Certified Network Associate (CCNA)', 'tech-portfolio' ),
+                    'subtitle' => __( 'Cisco Systems', 'tech-portfolio' ),
+                    'desc'  => __( 'Validates ability to install, configure, operate, and troubleshoot medium-size routed and switched networks. Covers network fundamentals, IP connectivity, security fundamentals, automation, and programmability.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-1',
                 ),
                 array(
-                    'name'   => __( 'Network Support & Security', 'tech-portfolio' ),
-                    'issuer' => __( 'Cisco Systems', 'tech-portfolio' ),
-                    'icon'   => '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+                    'title' => __( 'Network Support & Security', 'tech-portfolio' ),
+                    'subtitle' => __( 'Cisco Systems', 'tech-portfolio' ),
+                    'desc'  => __( 'Focused on network infrastructure support with security hardening: monitoring, threat detection, access control, and secure remote access configuration.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-2',
                 ),
                 array(
-                    'name'   => __( 'Network Basics', 'tech-portfolio' ),
-                    'issuer' => __( 'Cisco Systems', 'tech-portfolio' ),
-                    'icon'   => '<rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M12 8v8M5 16v-4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4"/>',
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M12 8v8M5 16v-4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4"/></svg>',
+                    'title' => __( 'Network Basics', 'tech-portfolio' ),
+                    'subtitle' => __( 'Cisco Systems', 'tech-portfolio' ),
+                    'desc'  => __( 'Foundational networking concepts: OSI/TCP-IP models, IPv4/IPv6 addressing, subnetting, basic switching and routing, and network device management.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-3',
                 ),
                 array(
-                    'name'   => __( 'Operating Systems & Hardware', 'tech-portfolio' ),
-                    'issuer' => __( 'Cisco Systems', 'tech-portfolio' ),
-                    'icon'   => '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>',
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+                    'title' => __( 'Operating Systems & Hardware', 'tech-portfolio' ),
+                    'subtitle' => __( 'Cisco Systems', 'tech-portfolio' ),
+                    'desc'  => __( 'Computer hardware components, operating system installation and configuration, troubleshooting methodology, and peripheral device management.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-4',
                 ),
                 array(
-                    'name'   => __( 'Introduction to Packet Tracer', 'tech-portfolio' ),
-                    'issuer' => __( 'Cisco Systems', 'tech-portfolio' ),
-                    'icon'   => '<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
+                    'title' => __( 'Introduction to Packet Tracer', 'tech-portfolio' ),
+                    'subtitle' => __( 'Cisco Systems', 'tech-portfolio' ),
+                    'desc'  => __( 'Hands-on proficiency with Cisco Packet Tracer for network simulation, topology design, device configuration, and protocol analysis.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-1',
                 ),
                 array(
-                    'name'   => __( 'Python Fundamentals for Researchers', 'tech-portfolio' ),
-                    'issuer' => __( 'National Institute of Fundamental Studies (NIFS)', 'tech-portfolio' ),
-                    'icon'   => '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>',
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
+                    'title' => __( 'Python Fundamentals for Researchers', 'tech-portfolio' ),
+                    'subtitle' => __( 'National Institute of Fundamental Studies (NIFS)', 'tech-portfolio' ),
+                    'desc'  => __( 'Python programming for scientific computing: data manipulation, visualization, automation scripting, and research workflow automation.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-2',
                 ),
                 array(
-                    'name'   => __( 'Prompt Engineering Professional', 'tech-portfolio' ),
-                    'issuer' => __( 'DeepLearning.AI', 'tech-portfolio' ),
-                    'icon'   => '<circle cx="12" cy="12" r="10"/><path d="m9.09 9 1.24 3h2.33l1.24-3"/>',
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9.09 9 1.24 3h2.33l1.24-3"/></svg>',
+                    'title' => __( 'Prompt Engineering Professional', 'tech-portfolio' ),
+                    'subtitle' => __( 'DeepLearning.AI', 'tech-portfolio' ),
+                    'desc'  => __( 'Advanced prompt engineering techniques for LLMs: chain-of-thought, few-shot prompting, RAG integration, and production prompt optimization.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-3',
                 ),
                 array(
-                    'name'   => __( 'Certificate in Computer Science', 'tech-portfolio' ),
-                    'issuer' => __( 'NIBM Sri Lanka', 'tech-portfolio' ),
-                    'icon'   => '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+                    'title' => __( 'Certificate in Computer Science', 'tech-portfolio' ),
+                    'subtitle' => __( 'NIBM Sri Lanka', 'tech-portfolio' ),
+                    'desc'  => __( 'Core computer science fundamentals: algorithms, data structures, databases, software engineering principles, and programming paradigms.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-4',
                 ),
                 array(
-                    'name'   => __( 'Diploma in Skill Development', 'tech-portfolio' ),
-                    'issuer' => __( 'CSDS Sri Lanka', 'tech-portfolio' ),
-                    'icon'   => '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+                    'title' => __( 'Diploma in Skill Development', 'tech-portfolio' ),
+                    'subtitle' => __( 'CSDS Sri Lanka', 'tech-portfolio' ),
+                    'desc'  => __( 'Professional skills development: communication, project management, teamwork, and technical documentation for IT professionals.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-1',
                 ),
             );
 
-            $delay_map = array( 'reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4', 'reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4', 'reveal-delay-1' );
-
-            foreach ( $certifications as $i => $cert ) :
-                $delay = isset( $delay_map[ $i ] ) ? $delay_map[ $i ] : '';
+            foreach ( $certifications as $cert ) :
             ?>
-                <div class="cert-card reveal <?php echo esc_attr( $delay ); ?>">
-                    <div class="cert-badge" aria-hidden="true">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <?php echo $cert['icon']; // Already escaped SVG paths ?>
-                        </svg>
-                    </div>
-                    <div class="cert-info">
-                        <h3><?php echo esc_html( $cert['name'] ); ?></h3>
-                        <p><?php echo esc_html( $cert['issuer'] ); ?></p>
-                    </div>
+                <div class="skill-card reveal <?php echo esc_attr( $cert['delay'] ); ?>">
+                    <div class="skill-icon" aria-hidden="true"><?php echo $cert['icon']; // Already escaped SVG ?></div>
+                    <h3 class="skill-title"><?php echo esc_html( $cert['title'] ); ?></h3>
+                    <p class="skill-subtitle" style="color: var(--gold); font-size: 0.85rem; font-weight: 500; margin-bottom: 8px;"><?php echo esc_html( $cert['subtitle'] ); ?></p>
+                    <p class="skill-desc"><?php echo esc_html( $cert['desc'] ); ?></p>
                 </div>
             <?php endforeach; ?>
         </div>

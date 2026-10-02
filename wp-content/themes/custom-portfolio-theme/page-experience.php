@@ -37,52 +37,40 @@ get_header();
 <?php endwhile; endif; ?>
 <?php rewind_posts(); ?>
 
-<!-- Experience Timeline -->
+<!-- Experience Grid -->
 <section class="section experience-section" aria-labelledby="experience-title">
     <div class="container">
-        <h2 class="section-title reveal" id="experience-title" data-index="01"><?php esc_html_e( 'Career Timeline', 'tech-portfolio' ); ?></h2>
+        <h2 class="section-title reveal" id="experience-title" data-index="01"><?php esc_html_e( 'Work Experience', 'tech-portfolio' ); ?></h2>
 
-        <div class="timeline">
+        <div class="skills-grid">
+            <?php
+            $experience = array(
+                array(
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+                    'title' => __( 'IT Trainee — Network & Cyber Security', 'tech-portfolio' ),
+                    'subtitle' => __( 'Kandy Municipal Council', 'tech-portfolio' ),
+                    'desc'  => __( 'Proactive maintenance of 200+ workstations/servers, network cabling (Cat6/fiber), switch/AP configuration, hardware troubleshooting, user support for 150+ staff, asset tracking for 500+ IT assets. Reduced downtime 40%.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-1',
+                ),
+                array(
+                    'icon'  => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+                    'title' => __( 'Volunteer — IT & Workshop Support', 'tech-portfolio' ),
+                    'subtitle' => __( 'National Institute of Fundamental Studies (NIFS), Kandy', 'tech-portfolio' ),
+                    'desc'  => __( 'Hardware diagnostics, network troubleshooting, asset tracking for 300+ assets, workshop coordination for 12+ research events (50-100 attendees each), YSA organizing committee member. Streamlined asset tracking by 60%.', 'tech-portfolio' ),
+                    'delay' => 'reveal-delay-2',
+                ),
+            );
 
-            <!-- Current Role -->
-            <div class="timeline-item">
-                <div class="timeline-card">
-                    <span class="timeline-date"><?php esc_html_e( 'October 2025 – Present', 'tech-portfolio' ); ?></span>
-                    <h3 class="timeline-title"><?php esc_html_e( 'IT Trainee — Network & Cyber Security', 'tech-portfolio' ); ?></h3>
-                    <h4 class="timeline-subtitle"><?php esc_html_e( 'Kandy Municipal Council', 'tech-portfolio' ); ?></h4>
-                    <div class="timeline-desc">
-                        <p><?php esc_html_e( 'Providing operational technical support and configuring localized networking equipment to maintain council administration continuity.', 'tech-portfolio' ); ?></p>
-                        <ul>
-                            <li><?php esc_html_e( 'Perform proactive computer maintenance and physical hardware servicing.', 'tech-portfolio' ); ?></li>
-                            <li><?php esc_html_e( 'Assist with network cabling installations and local networking hardware setups.', 'tech-portfolio' ); ?></li>
-                            <li><?php esc_html_e( 'Troubleshoot critical workstation hardware faults and OS conflicts.', 'tech-portfolio' ); ?></li>
-                            <li><?php esc_html_e( 'Provide direct desktop and network technical support to department staff.', 'tech-portfolio' ); ?></li>
-                            <li><?php esc_html_e( 'Deploy, maintain, and monitor localized computer systems and connected peripherals.', 'tech-portfolio' ); ?></li>
-                            <li><?php esc_html_e( 'Support data entry systems and manage basic internal system updates.', 'tech-portfolio' ); ?></li>
-                        </ul>
-                    </div>
+            foreach ( $experience as $exp ) :
+            ?>
+                <div class="skill-card reveal <?php echo esc_attr( $exp['delay'] ); ?>">
+                    <div class="skill-icon" aria-hidden="true"><?php echo $exp['icon']; // Already escaped SVG ?></div>
+                    <h3 class="skill-title"><?php echo esc_html( $exp['title'] ); ?></h3>
+                    <p class="skill-subtitle" style="color: var(--gold); font-size: 0.85rem; font-weight: 500; margin-bottom: 8px;"><?php echo esc_html( $exp['subtitle'] ); ?></p>
+                    <p class="skill-desc"><?php echo esc_html( $exp['desc'] ); ?></p>
                 </div>
-            </div>
-
-            <!-- Volunteer Role -->
-            <div class="timeline-item">
-                <div class="timeline-card">
-                    <span class="timeline-date"><?php esc_html_e( 'January 2023 – September 2023', 'tech-portfolio' ); ?></span>
-                    <h3 class="timeline-title"><?php esc_html_e( 'Volunteer — IT & Workshop Support', 'tech-portfolio' ); ?></h3>
-                    <h4 class="timeline-subtitle"><?php esc_html_e( 'National Institute of Fundamental Studies (NIFS), Kandy', 'tech-portfolio' ); ?></h4>
-                    <div class="timeline-desc">
-                        <p><?php esc_html_e( 'Supported technical workflows, inventory tracking systems, and workshop logistical setups within the computer science division.', 'tech-portfolio' ); ?></p>
-                        <ul>
-                            <li><?php esc_html_e( 'Identified and assisted in resolving hardware failures and local network issues.', 'tech-portfolio' ); ?></li>
-                            <li><?php esc_html_e( 'Supported inventory registration for tracking internal hardware assets.', 'tech-portfolio' ); ?></li>
-                            <li><?php esc_html_e( 'Coordinated logistics and setup for computer science research workshops.', 'tech-portfolio' ); ?></li>
-                            <li><?php esc_html_e( 'Active member of the Young Scientists Association (YSA) organizing committee.', 'tech-portfolio' ); ?></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-        </div><!-- .timeline -->
+            <?php endforeach; ?>
+        </div>
     </div>
 </section>
 

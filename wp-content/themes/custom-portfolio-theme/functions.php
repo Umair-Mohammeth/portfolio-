@@ -13,6 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
    1. Theme Setup
    ========================================================================== */
 function tech_portfolio_setup() {
+    // Load theme textdomain for translations.
+    load_theme_textdomain( 'tech-portfolio', get_template_directory() . '/languages' );
+
     // Enable support for Post Thumbnails on pages and posts.
     add_theme_support( 'post-thumbnails' );
 
@@ -202,6 +205,7 @@ function tech_portfolio_render_project_meta_box( $post ) {
     $tech_stack = get_post_meta( $post->ID, '_project_tech_stack', true );
     $github_url = get_post_meta( $post->ID, '_project_github_url', true );
     $live_url   = get_post_meta( $post->ID, '_project_live_url', true );
+    $pdf_url    = get_post_meta( $post->ID, '_project_pdf_url', true );
 
     // Output form fields securely.
     ?>
@@ -220,6 +224,11 @@ function tech_portfolio_render_project_meta_box( $post ) {
     <p>
         <label for="project_live_url"><strong><?php esc_html_e( 'Live Link / Simulation URL:', 'tech-portfolio' ); ?></strong></label><br />
         <input type="url" id="project_live_url" name="project_live_url" value="<?php echo esc_url( $live_url ); ?>" class="widefat" placeholder="https://..." />
+    </p>
+    <p>
+        <label for="project_pdf_url"><strong><?php esc_html_e( 'PDF Documentation URL:', 'tech-portfolio' ); ?></strong></label><br />
+        <input type="url" id="project_pdf_url" name="project_pdf_url" value="<?php echo esc_url( $pdf_url ); ?>" class="widefat" placeholder="https://.../documentation.pdf" />
+        <span class="description"><?php esc_html_e( 'Direct link to a PDF file for the live viewer.', 'tech-portfolio' ); ?></span>
     </p>
     <?php
 }
@@ -270,6 +279,14 @@ function tech_portfolio_save_project_meta_data( $post_id ) {
         $live_url = esc_url_raw( wp_unslash( $_POST['project_live_url'] ), array( 'http', 'https' ) );
         if ( $live_url ) {
             update_post_meta( $post_id, '_project_live_url', $live_url );
+        }
+    }
+
+    if ( isset( $_POST['project_pdf_url'] ) ) {
+        // VibeSec: validate URL scheme is http/https only
+        $pdf_url = esc_url_raw( wp_unslash( $_POST['project_pdf_url'] ), array( 'http', 'https' ) );
+        if ( $pdf_url ) {
+            update_post_meta( $post_id, '_project_pdf_url', $pdf_url );
         }
     }
 }
@@ -420,35 +437,75 @@ add_filter( 'the_content', 'tech_portfolio_lazy_iframes' );
    10d. Project Placeholder Images (SVG)
    ========================================================================== */
 function tech_portfolio_get_project_placeholder( $post_id = 0 ) {
+    // Direct slug => file, plus common short aliases used on this site.
     $map = array(
-        'iot-rfid-access'        => 'iot-rfid-access.svg',
-        'network-automation'     => 'network-automation.svg',
-        'cybersecurity-monitor'  => 'cybersecurity-monitor.svg',
-        'cloud-infrastructure'   => 'cloud-infrastructure.svg',
-        'python-automation'      => 'python-automation.svg',
-        'cisco-packet-tracer'    => 'cisco-packet-tracer.svg',
+        'iot-rfid-access'       => 'iot-rfid-access.svg',
+        'iot'                   => 'iot-rfid-access.svg',
+        'network-automation'    => 'network-automation.svg',
+        'networking'            => 'network-automation.svg',
+        'network'               => 'network-automation.svg',
+        'cybersecurity-monitor' => 'cybersecurity-monitor.svg',
+        'security'              => 'cybersecurity-monitor.svg',
+        'cybersecurity'         => 'cybersecurity-monitor.svg',
+        'cloud-infrastructure'  => 'cloud-infrastructure.svg',
+        'cloud'                 => 'cloud-infrastructure.svg',
+        'python-automation'     => 'python-automation.svg',
+        'python'                => 'python-automation.svg',
+        'automation'            => 'python-automation.svg',
+        'cisco-packet-tracer'   => 'cisco-packet-tracer.svg',
+        'cisco'                 => 'cisco-packet-tracer.svg',
+        'packet-tracer'         => 'cisco-packet-tracer.svg',
     );
 
     $default = 'network-automation.svg';
     $file    = $default;
 
     if ( $post_id ) {
-        $terms = get_the_terms( $post_id, 'project_category' );
-        if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
-            foreach ( $terms as $term ) {
-                if ( isset( $map[ $term->slug ] ) ) {
-                    $file = $map[ $term->slug ];
-                    break;
-                }
+        // 0) Explicit per-project image override (_project_image meta).
+        $override = (string) get_post_meta( $post_id, '_project_image', true );
+        if ( $override && preg_match( '/^[a-z0-9-]+\.svg$/', $override ) && file_exists( get_template_directory() . '/assets/images/' . $override ) ) {
+            return get_template_directory_uri() . '/assets/images/' . $override;
+        }
+
+        // 1) Tech-stack / title keywords first (most specific to the build).
+        $haystack = strtolower( get_the_title( $post_id ) . ' ' . (string) get_post_meta( $post_id, '_project_tech_stack', true ) );
+        $keywords = array(
+            'rfid'     => 'iot-rfid-access.svg',
+            'esp32'    => 'iot-rfid-access.svg',
+            'parcel'   => 'iot-rfid-access.svg',
+            'servo'    => 'iot-rfid-access.svg',
+            'telegram' => 'iot-rfid-access.svg',
+            'cisco'    => 'cisco-packet-tracer.svg',
+            'packet'   => 'cisco-packet-tracer.svg',
+            'vlan'     => 'cisco-packet-tracer.svg',
+            'ospf'     => 'cisco-packet-tracer.svg',
+            'python'   => 'python-automation.svg',
+            'threat'   => 'cybersecurity-monitor.svg',
+            'firewall' => 'cybersecurity-monitor.svg',
+            'cloud'    => 'cloud-infrastructure.svg',
+            'ec2'      => 'cloud-infrastructure.svg',
+        );
+        foreach ( $keywords as $kw => $img ) {
+            if ( false !== strpos( $haystack, $kw ) ) {
+                $file = $img;
+                break;
             }
         }
 
+        // 2) Fall back to category slug.
         if ( $file === $default ) {
-            $title = strtolower( get_the_title( $post_id ) );
-            foreach ( array_keys( $map ) as $key ) {
-                if ( strpos( $title, $key ) !== false ) {
-                    $file = $map[ $key ];
-                    break;
+            $terms = get_the_terms( $post_id, 'project_category' );
+            if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+                foreach ( $terms as $term ) {
+                    $slug = strtolower( $term->slug );
+                    if ( isset( $map[ $slug ] ) ) {
+                        $file = $map[ $slug ];
+                        break;
+                    }
+                    if ( false !== strpos( $slug, 'iot' ) || false !== strpos( $slug, 'rfid' ) || false !== strpos( $slug, 'esp' ) ) {
+                        $file = 'iot-rfid-access.svg';
+                        break;
+                    }
                 }
             }
         }

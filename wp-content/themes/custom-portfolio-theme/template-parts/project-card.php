@@ -18,7 +18,10 @@ $data_cats    = ! empty( $term_slugs ) ? esc_attr( implode( ',', $term_slugs ) )
 
 <article class="project-card reveal <?php echo esc_attr( $class_string . ' ' . $delay ); ?>"
     <?php echo $data_cats ? ' data-categories="' . $data_cats . '"' : ''; ?>
-    aria-label="<?php printf( esc_attr__( 'Project: %s', 'tech-portfolio' ), get_the_title() ); ?>">
+    aria-label="<?php printf( esc_attr__( 'Project: %s', 'tech-portfolio' ), get_the_title() ); ?>"
+    data-project-id="<?php echo esc_attr( get_the_ID() ); ?>"
+    role="button"
+    tabindex="0">
 
     <div class="project-card-image">
         <?php if ( has_post_thumbnail() ) : ?>
@@ -27,6 +30,9 @@ $data_cats    = ! empty( $term_slugs ) ? esc_attr( implode( ',', $term_slugs ) )
             <img src="<?php echo esc_url( tech_portfolio_get_project_placeholder( get_the_ID() ) ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" loading="lazy" width="700" height="440" />
         <?php endif; ?>
         <div class="project-card-overlay" aria-hidden="true"></div>
+        <button class="project-card-quickview" data-project-id="<?php echo esc_attr( get_the_ID() ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Quick view for %s', 'tech-portfolio' ), get_the_title() ) ); ?>" title="<?php esc_attr_e( 'Quick View', 'tech-portfolio' ); ?>">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        </button>
     </div>
 
     <div class="project-card-content">
